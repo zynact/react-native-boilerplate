@@ -1,0 +1,5 @@
+*.xcworkspace/xcuserdata
+Pods/
+*.ipa
+*.dSYM.zip
+ExportOptions.plist

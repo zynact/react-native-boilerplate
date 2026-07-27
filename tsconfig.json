@@ -1,0 +1,79 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    // ── Strict type-checking ──────────────────────────────────────────
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+
+    // ── Additional checks ─────────────────────────────────────────────
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // ── Module resolution ─────────────────────────────────────────────
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      // Root shorthand
+      "@/*": ["src/*"],
+
+      // Core modules
+      "@core/*": ["src/core/*"],
+      "@core/api": ["src/core/api/index.ts"],
+      "@core/auth": ["src/core/auth/index.ts"],
+      "@core/config": ["src/core/config/index.ts"],
+      "@core/navigation": ["src/core/navigation/index.ts"],
+      "@core/providers": ["src/core/providers/index.ts"],
+      "@core/services": ["src/core/services/index.ts"],
+      "@core/storage": ["src/core/storage/index.ts"],
+      "@core/store": ["src/core/store/index.ts"],
+      "@core/error": ["src/core/error/index.ts"],
+      "@core/theme": ["src/core/theme/index.ts"],
+
+      // Shared modules
+      "@shared/*": ["src/shared/*"],
+      "@shared/components": ["src/shared/components/index.ts"],
+      "@shared/hooks": ["src/shared/hooks/index.ts"],
+      "@shared/utils": ["src/shared/utils/index.ts"],
+      "@shared/constants": ["src/shared/constants/index.ts"],
+      "@shared/types": ["src/shared/types/index.ts"],
+      "@shared/validation": ["src/shared/validation/index.ts"],
+
+      // Feature modules (add each feature here)
+      "@features/*": ["src/features/*"],
+
+      // Assets
+      "@assets/*": ["src/assets/*"]
+    },
+
+    // ── Emit / output ─────────────────────────────────────────────────
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": false,
+
+    // ── Types ─────────────────────────────────────────────────────────
+    "types": ["jest", "nativewind/types"],
+    "typeRoots": ["./src/@types", "./node_modules/@types"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts",
+    "src/@types/**/*.d.ts",
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx",
+    "App.tsx",
+    "index.js"
+  ],
+  "exclude": ["node_modules", "android", "ios", "*.config.js"]
+}

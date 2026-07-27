@@ -1,0 +1,75 @@
+# frozen_string_literal: true
+
+default_platform(:android)
+
+platform :android do
+  desc 'Build and deploy to Google Play Internal Testing'
+  lane :internal do
+    gradle(
+      task: 'bundle',
+      build_type: 'Release',
+      project_dir: 'android/',
+      properties: {
+        'android.injected.signing.store.file' => ENV['KEYSTORE_PATH'],
+        'android.injected.signing.store.password' => ENV['KEYSTORE_STORE_PASSWORD'],
+        'android.injected.signing.key.alias' => ENV['KEYSTORE_KEY_ALIAS'],
+        'android.injected.signing.key.password' => ENV['KEYSTORE_KEY_PASSWORD'],
+      }
+    )
+    upload_to_play_store(track: 'internal')
+  end
+
+  desc 'Build and distribute via Firebase App Distribution'
+  lane :firebase do
+    gradle(
+      task: 'assemble',
+      build_type: 'Release',
+      project_dir: 'android/'
+    )
+    firebase_app_distribution(
+      app: ENV['FIREBASE_APP_ID_ANDROID'],
+      testers: ENV['FIREBASE_TESTERS'],
+      release_notes: ENV['RELEASE_NOTES'] || 'New build'
+    )
+  end
+end
+
+platform :ios do
+  desc 'Build and upload to TestFlight'
+  lane :beta do
+    increment_build_number(xcodeproj: 'ios/BoilerplateApp.xcodeproj')
+    build_ios_app(
+      workspace: 'ios/BoilerplateApp.xcworkspace',
+      scheme: 'BoilerplateApp',
+      export_method: 'app-store',
+      export_options: 'ios/ExportOptions.plist'
+    )
+    upload_to_testflight
+  end
+
+  desc 'Build and upload to App Store'
+  lane :release do
+    increment_build_number(xcodeproj: 'ios/BoilerplateApp.xcodeproj')
+    build_ios_app(
+      workspace: 'ios/BoilerplateApp.xcworkspace',
+      scheme: 'BoilerplateApp',
+      export_method: 'app-store',
+      export_options: 'ios/ExportOptions.plist'
+    )
+    upload_to_app_store
+  end
+
+  desc 'Distribute via Firebase App Distribution'
+  lane :firebase do
+    build_ios_app(
+      workspace: 'ios/BoilerplateApp.xcworkspace',
+      scheme: 'BoilerplateApp',
+      export_method: 'ad-hoc'
+    )
+    firebase_app_distribution(
+      app: ENV['FIREBASE_APP_ID_IOS'],
+      testers: ENV['FIREBASE_TESTERS'],
+      release_notes: ENV['RELEASE_NOTES'] || 'New build'
+    )
+  end
+end
