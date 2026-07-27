@@ -42,7 +42,7 @@ export const StorageService = {
   // ── Utility ───────────────────────────────────────────────────────────────
 
   remove(key: string): void {
-    storage.delete(key);
+    storage.remove(key);
   },
 
   clear(): void {

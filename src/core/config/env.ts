@@ -1,4 +1,4 @@
-import Config from 'react-native-config';
+import RNConfig from 'react-native-config';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -18,7 +18,7 @@ interface AppConfig {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function requireString(key: string, fallback?: string): string {
-  const value = (Config as Record<string, string | undefined>)[key] ?? fallback;
+  const value = (RNConfig as Record<string, string | undefined>)[key] ?? fallback;
   if (!value) {
     throw new Error(`[Config] Missing required environment variable: ${key}`);
   }
@@ -26,7 +26,7 @@ function requireString(key: string, fallback?: string): string {
 }
 
 function requireEnum<T extends string>(key: string, allowed: readonly T[], fallback?: T): T {
-  const raw = ((Config as Record<string, string | undefined>)[key] ?? fallback) as
+  const raw = ((RNConfig as Record<string, string | undefined>)[key] ?? fallback) as
     string | undefined;
   if (!raw || !allowed.includes(raw as T)) {
     throw new Error(
@@ -37,13 +37,13 @@ function requireEnum<T extends string>(key: string, allowed: readonly T[], fallb
 }
 
 function optionalBoolean(key: string, fallback: boolean): boolean {
-  const raw = (Config as Record<string, string | undefined>)[key];
+  const raw = (RNConfig as Record<string, string | undefined>)[key];
   if (raw === undefined || raw === null) return fallback;
   return raw === 'true' || raw === '1';
 }
 
 function optionalNumber(key: string, fallback: number): number {
-  const raw = (Config as Record<string, string | undefined>)[key];
+  const raw = (RNConfig as Record<string, string | undefined>)[key];
   if (raw === undefined || raw === null) return fallback;
   const parsed = Number(raw);
   if (Number.isNaN(parsed)) {
