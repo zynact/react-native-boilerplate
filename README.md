@@ -52,7 +52,7 @@ pnpm install
 Run the CLI Setup Wizard to configure the display name, Android package name, and iOS Bundle ID:
 
 ```bash
-pnpm setup
+pnpm setup:project
 ```
 
 ### 3. Run Runtimes
@@ -76,7 +76,7 @@ This project exposes script hooks in `package.json` to keep development producti
 
 | Script                        | Command                          | Purpose                                                      |
 | :---------------------------- | :------------------------------- | :----------------------------------------------------------- |
-| `pnpm setup`                  | `node scripts/setup.js`          | Configure project identifier variables.                      |
+| `pnpm project:setup`          | `node scripts/setup.js`          | Configure project identifier variables.                      |
 | `pnpm setup:fastlane`         | `node scripts/setup-fastlane.js` | Build `.env` details for Fastlane lanes.                     |
 | `pnpm generate <type> <name>` | `node scripts/generate.js ...`   | Scaffold a component, feature, screen, api, slice, or form.  |
 | `pnpm add:<module>`           | `node scripts/add-module.js ...` | Inject optional dependencies and boilerplate configurations. |

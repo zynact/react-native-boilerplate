@@ -7,7 +7,7 @@ This boilerplate implements custom CLI wizards and automation scripts to acceler
 Configure the application details (bundle identifier, package names, screen display names) across Android and iOS directories at startup:
 
 ```bash
-pnpm setup
+pnpm setup:project
 ```
 
 ---

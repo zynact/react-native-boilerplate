@@ -660,7 +660,7 @@ Support
 ## Project Setup
 
 ```bash
-pnpm setup
+pnpm setup:project
 ```
 
 Automates

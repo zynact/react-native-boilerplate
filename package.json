@@ -13,7 +13,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\"",
     "type-check": "tsc --noEmit",
     "prepare": "husky",
-    "setup": "node scripts/setup.js",
+    "setup:project": "node scripts/setup.js",
     "setup:fastlane": "node scripts/setup-fastlane.js",
     "generate": "node scripts/generate.js",
     "add:socketio": "node scripts/add-module.js socketio",

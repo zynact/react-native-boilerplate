@@ -51,6 +51,16 @@ function prompt(rl, question) {
   });
 }
 
+function getOldAndroidPackageName() {
+  const filePath = 'android/app/build.gradle';
+  if (!fileExists(filePath)) {
+    return 'com.boilerplateapp';
+  }
+  const content = readFile(filePath);
+  const match = content.match(/namespace\s+"([^"]+)"/);
+  return match ? match[1] : 'com.boilerplateapp';
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // File updaters
 // ─────────────────────────────────────────────────────────────────────────────
@@ -168,6 +178,64 @@ function updateEnvCiExample(bundleId, androidPackageName) {
   console.log('  ✔ .env.ci.example updated');
 }
 
+function updateJavaSourceDirectory(oldPackage, newPackage) {
+  if (oldPackage === newPackage) {
+    console.log('  ℹ Android package name is unchanged — skipping directory migration');
+    return;
+  }
+
+  const javaBase = path.join(ROOT, 'android/app/src/main/java');
+  const oldPath = path.join(javaBase, oldPackage.replace(/\./g, '/'));
+  const newPath = path.join(javaBase, newPackage.replace(/\./g, '/'));
+
+  if (!fs.existsSync(oldPath)) {
+    console.log(`  ⚠ Old package path ${oldPath} not found, skipping source moves`);
+    return;
+  }
+
+  // Create new folder structure
+  fs.mkdirSync(newPath, { recursive: true });
+
+  // Move files and update package declarations
+  const files = fs.readdirSync(oldPath);
+  files.forEach((file) => {
+    const oldFilePath = path.join(oldPath, file);
+    const newFilePath = path.join(newPath, file);
+
+    if (fs.lstatSync(oldFilePath).isFile()) {
+      let content = fs.readFileSync(oldFilePath, 'utf8');
+      // Update package declaration: e.g. package com.boilerplateapp
+      content = content.replace(
+        new RegExp(`package\\s+${oldPackage}`, 'g'),
+        `package ${newPackage}`,
+      );
+      // Update any imports matching old package if they exist
+      content = content.replace(
+        new RegExp(`import\\s+${oldPackage}\\.`, 'g'),
+        `import ${newPackage}.`,
+      );
+      fs.writeFileSync(newFilePath, content, 'utf8');
+      fs.unlinkSync(oldFilePath);
+      console.log(`  ✔ Migrated and updated ${file}`);
+    }
+  });
+
+  // Clean up old directories
+  fs.rmdirSync(oldPath);
+
+  // Recursively clean up empty parent directories up to main/java
+  let currentParent = path.dirname(oldPath);
+  while (
+    currentParent !== javaBase &&
+    fs.existsSync(currentParent) &&
+    fs.readdirSync(currentParent).length === 0
+  ) {
+    fs.rmdirSync(currentParent);
+    currentParent = path.dirname(currentParent);
+  }
+  console.log(`  ✔ Java/Kotlin source directories migrated to ${newPackage}`);
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Main
 // ─────────────────────────────────────────────────────────────────────────────
@@ -214,6 +282,8 @@ async function main() {
 
   console.log('\n─── Applying changes ───────────────────────────────────\n');
 
+  const oldAndroidPackage = getOldAndroidPackageName();
+
   try {
     updateAppJson(appName, displayName);
     updateIndexJs(appName);
@@ -221,6 +291,7 @@ async function main() {
     updateAndroidManifest(androidPackageName);
     updateInfoPlist(displayName, bundleId);
     updateEnvCiExample(bundleId, androidPackageName);
+    updateJavaSourceDirectory(oldAndroidPackage, androidPackageName);
   } catch (err) {
     console.error('\n✖ Error during setup:', err.message);
     process.exit(1);
@@ -232,9 +303,8 @@ async function main() {
   console.log(`  Bundle ID       : ${bundleId}`);
   console.log(`  Android package : ${androidPackageName}`);
   console.log(`  Android path    : ${bundleIdToPath(androidPackageName)}`);
-  console.log('\n  ⚠  Java/Kotlin source directories under android/app/src/main/java/');
-  console.log('     must be renamed manually if you changed the package name.');
-  console.log('     Also update the iOS bundle identifier in Xcode → Signing & Capabilities.');
+  console.log('\n  ⚠  iOS bundle identifier updated in Info.plist.');
+  console.log('     Verify signing configurations in Xcode → Signing & Capabilities.');
   console.log('\n✅ Setup complete!\n');
 }
 
