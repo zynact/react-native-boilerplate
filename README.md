@@ -1,97 +1,95 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native Production Boilerplate
 
-# Getting Started
+A **production-ready, feature-first React Native boilerplate** designed for scalability, absolute type-safety, and modular expansion.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+This template enforces clean feature boundaries, opinionated conventions, robust offline-first caching, and complete CLI automated scaffolding.
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 🚀 Key Features
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **Architecture**: Feature-first domain partitioning, strict dependency boundaries, and path aliases.
+- **Navigation**: Type-safe navigation flows, custom overlays (imperative bottom sheets, toast notifications, dialogs) driven by context providers.
+- **State Management**: Redux Toolkit store + RTK Query with automatic token refresh queuing middleware.
+- **Styling**: Dark-mode support out of the box via Tailwind CSS & Nativewind.
+- **Storage**: Fast, native C++ storage backed by MMKV.
+- **DevOps**: Complete Fastlane distribution tracks for iOS App Store/TestFlight & Android Google Play/Firebase App Distribution.
+- **Automation**: CLI commands to initialize project names, generate domain structures, and add optional modules (Stripe, Camera, Sentry, Maps) dynamically.
 
-```sh
-# Using npm
-npm start
+---
 
-# OR using Yarn
-yarn start
+## 📖 Table of Contents
+
+For detailed usage guidelines, configuration, and design rules, consult the sub-documentation:
+
+1.  **[Project Architecture & Domain Boundaries](file:///d:/Work/zynact/templates/react-native-template/docs/architecture.md)**
+    - Folder layout, feature-first boundaries, code ordering, and TypeScript type-safety rules.
+2.  **[Navigation & Overlays Guide](file:///d:/Work/zynact/templates/react-native-template/docs/navigation.md)**
+    - Type-safe route params, bottom sheet/dialog managers, and nested stack patterns.
+3.  **[State Management & Networking](file:///d:/Work/zynact/templates/react-native-template/docs/state_management.md)**
+    - Store configurations, RTK Query API injection, cache tagging, and token auto-refresh middleware.
+4.  **[Theme Engine & Styling](file:///d:/Work/zynact/templates/react-native-template/docs/theme_engine.md)**
+    - Design system tokens, Tailwind config, utility classes, and light/dark toggles.
+5.  **[Core Services & Native Hooks](file:///d:/Work/zynact/templates/react-native-template/docs/core_services.md)**
+    - MMKV Storage service, Toast notifications, Permissions manager, Logger, and system hooks.
+6.  **[CLI Scaffolding & Module Automation](file:///d:/Work/zynact/templates/react-native-template/docs/generators_and_automation.md)**
+    - Setup wizard commands, code generators (`pnpm generate`), pluggable modules (`stripe`, `sentry`, etc.), and Fastlane config.
+
+---
+
+## 🛠️ Quick Start
+
+### 1. Installation
+
+Install Node dependencies:
+
+```bash
+pnpm install
 ```
 
-## Step 2: Build and run your app
+### 2. Rename & Configure Project
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Run the CLI Setup Wizard to configure the display name, Android package name, and iOS Bundle ID:
 
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```bash
+pnpm setup
 ```
 
-### iOS
+### 3. Run Runtimes
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+```bash
+# Start Metro bundler
+pnpm start
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+# Run on Android emulator/device
+pnpm android
 
-```sh
-bundle install
+# Run on iOS simulator/device
+pnpm ios
 ```
 
-Then, and every time you update your native dependencies, run:
+---
 
-```sh
-bundle exec pod install
-```
+## ⚙️ Development Commands
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+This project exposes script hooks in `package.json` to keep development productive:
 
-```sh
-# Using npm
-npm run ios
+| Script                        | Command                          | Purpose                                                      |
+| :---------------------------- | :------------------------------- | :----------------------------------------------------------- |
+| `pnpm setup`                  | `node scripts/setup.js`          | Configure project identifier variables.                      |
+| `pnpm setup:fastlane`         | `node scripts/setup-fastlane.js` | Build `.env` details for Fastlane lanes.                     |
+| `pnpm generate <type> <name>` | `node scripts/generate.js ...`   | Scaffold a component, feature, screen, api, slice, or form.  |
+| `pnpm add:<module>`           | `node scripts/add-module.js ...` | Inject optional dependencies and boilerplate configurations. |
+| `pnpm type-check`             | `tsc --noEmit`                   | Run compiler checks across project.                          |
+| `pnpm lint`                   | `eslint . --max-warnings=0`      | Validate coding syntax and order formatting.                 |
+| `pnpm format`                 | `prettier --write ...`           | Format all workspace files.                                  |
 
-# OR using Yarn
-yarn ios
-```
+---
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 🛡️ Coding Standards
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+This template enforces a strict TypeScript compiler check. Every module must respect feature boundaries:
 
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- Never cross-import internal files from sibling features.
+- Export public interfaces exclusively using feature index barrels.
+- Avoid using `any` or disabling type checks.

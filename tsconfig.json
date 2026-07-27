@@ -73,7 +73,8 @@
     "__tests__/**/*.ts",
     "__tests__/**/*.tsx",
     "App.tsx",
-    "index.js"
+    "index.js",
+    "nativewind-env.d.ts"
   ],
   "exclude": ["node_modules", "android", "ios", "*.config.js"]
 }
