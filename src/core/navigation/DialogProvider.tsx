@@ -1,6 +1,8 @@
 import React, { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
 
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, View } from 'react-native';
+
+import { AppText } from '@shared/components';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -63,32 +65,38 @@ export function DialogProvider({ children }: DialogProviderProps): React.JSX.Ele
         statusBarTranslucent
         onRequestClose={hide}
       >
-        <Pressable style={styles.backdrop} onPress={hide}>
-          <Pressable style={styles.container}>
+        <Pressable className='flex-1 items-center justify-center bg-black/40' onPress={hide}>
+          <Pressable
+            className='bg-white rounded-2xl mx-10 px-5 pt-5 w-4/5'
+            onPress={(e) => e.stopPropagation()}
+          >
             {config !== null && (
               <>
-                <Text style={styles.title}>{config.title}</Text>
+                <AppText variant='h4' weight='semibold' align='center' className='text-slate-900'>
+                  {config.title}
+                </AppText>
                 {config.message !== undefined && (
-                  <Text style={styles.message}>{config.message}</Text>
+                  <AppText variant='bodySmall' align='center' className='text-slate-500 mt-1'>
+                    {config.message}
+                  </AppText>
                 )}
-                <View style={styles.actions}>
+                <View className='flex-row border-t border-slate-200 mt-4'>
                   {config.actions.map((action) => (
                     <Pressable
                       key={action.label}
-                      style={styles.actionButton}
+                      className='flex-1 items-center py-3'
                       onPress={() => {
                         action.onPress();
                         hide();
                       }}
                     >
-                      <Text
-                        style={[
-                          styles.actionLabel,
-                          action.isDestructive === true && styles.destructiveLabel,
-                        ]}
+                      <AppText
+                        variant='body'
+                        weight='medium'
+                        className={action.isDestructive === true ? 'text-red-500' : 'text-blue-500'}
                       >
                         {action.label}
-                      </Text>
+                      </AppText>
                     </Pressable>
                   ))}
                 </View>
@@ -112,55 +120,3 @@ export function useDialog(): DialogContextValue {
   }
   return ctx;
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Styles
-// ─────────────────────────────────────────────────────────────────────────────
-
-const styles = StyleSheet.create({
-  actionButton: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  actionLabel: {
-    fontSize: 16,
-    color: '#007AFF',
-    fontWeight: '500',
-  },
-  actions: {
-    flexDirection: 'row',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#C6C6C8',
-    marginTop: 16,
-  },
-  backdrop: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  container: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    marginHorizontal: 40,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    width: '80%',
-  },
-  destructiveLabel: {
-    color: '#FF3B30',
-  },
-  message: {
-    color: '#3C3C43',
-    fontSize: 13,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  title: {
-    color: '#000000',
-    fontSize: 17,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-});

@@ -7,7 +7,7 @@ import React, {
   type ReactNode,
 } from 'react';
 
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 
@@ -60,7 +60,7 @@ export function BottomSheetProvider({ children }: BottomSheetProviderProps): Rea
     <BottomSheetContext.Provider value={{ present, dismiss }}>
       {children}
       {config !== null && (
-        <View style={StyleSheet.absoluteFill} pointerEvents='box-none'>
+        <View className='absolute inset-0' pointerEvents='box-none'>
           <BottomSheet
             ref={bottomSheetRef}
             index={-1}
@@ -68,7 +68,7 @@ export function BottomSheetProvider({ children }: BottomSheetProviderProps): Rea
             enablePanDownToClose
             onClose={handleClose}
           >
-            <BottomSheetView style={styles.content}>{config.content}</BottomSheetView>
+            <BottomSheetView className='flex-1 p-4'>{config.content}</BottomSheetView>
           </BottomSheet>
         </View>
       )}
@@ -87,10 +87,3 @@ export function useBottomSheet(): BottomSheetContextValue {
   }
   return ctx;
 }
-
-const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    padding: 16,
-  },
-});

@@ -85,6 +85,22 @@ module.exports = {
         eqeqeq: ['error', 'always', { null: 'ignore' }],
         'no-shadow': 'off',
         '@typescript-eslint/no-shadow': 'error',
+
+        // ── Styling limits ───────────────────────────────────────────────
+        'react-native/no-inline-styles': 'error',
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: [
+              {
+                name: 'react-native',
+                importNames: ['StyleSheet'],
+                message:
+                  'Please use NativeWind (Tailwind CSS) classes via className instead of StyleSheet.',
+              },
+            ],
+          },
+        ],
       },
       settings: {
         'import/resolver': {

@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 
-import { Animated, StyleSheet, Text, View } from 'react-native';
+import { Animated, View } from 'react-native';
+
+import { AppText } from '@shared/components';
 
 import { ToastService, type ToastConfig, type ToastType } from './toast.service';
 
@@ -22,21 +24,15 @@ interface ToastItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Helpers
+// Color Mapping for NativeWind
 // ─────────────────────────────────────────────────────────────────────────────
 
-function getBackgroundColor(type: ToastType): string {
-  switch (type) {
-    case 'success':
-      return '#34C759';
-    case 'error':
-      return '#FF3B30';
-    case 'warning':
-      return '#FF9500';
-    case 'info':
-      return '#007AFF';
-  }
-}
+const toastBgClasses: Record<ToastType, string> = {
+  success: 'bg-success',
+  error: 'bg-error',
+  warning: 'bg-warning',
+  info: 'bg-info',
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Individual Toast
@@ -48,11 +44,16 @@ interface ToastItemViewProps {
 
 function ToastItemView({ item }: ToastItemViewProps): React.JSX.Element {
   const type = item.config.type ?? 'info';
-  const backgroundColor = getBackgroundColor(type);
+  const bgClass = toastBgClasses[type];
 
   return (
-    <Animated.View style={[styles.toast, { backgroundColor, opacity: item.opacity }]}>
-      <Text style={styles.toastText}>{item.config.message}</Text>
+    <Animated.View
+      style={{ opacity: item.opacity }}
+      className={`rounded-lg mt-2 px-4 py-3 shadow-md ${bgClass}`}
+    >
+      <AppText variant='bodySmall' weight='medium' className='text-white'>
+        {item.config.message}
+      </AppText>
     </Animated.View>
   );
 }
@@ -140,7 +141,7 @@ export function ToastProvider({ children }: ToastProviderProps): React.JSX.Eleme
     <>
       {children}
       {toasts.length > 0 && (
-        <View style={styles.container} pointerEvents='none'>
+        <View className='absolute bottom-10 left-4 right-4' pointerEvents='none'>
           {toasts.map((item) => (
             <ToastItemView key={item.id} item={item} />
           ))}
@@ -149,32 +150,3 @@ export function ToastProvider({ children }: ToastProviderProps): React.JSX.Eleme
     </>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Styles
-// ─────────────────────────────────────────────────────────────────────────────
-
-const styles = StyleSheet.create({
-  container: {
-    bottom: 40,
-    left: 16,
-    position: 'absolute',
-    right: 16,
-  },
-  toast: {
-    borderRadius: 8,
-    elevation: 4,
-    marginTop: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-  },
-  toastText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-});

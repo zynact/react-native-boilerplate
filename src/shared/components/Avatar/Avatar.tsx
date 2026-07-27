@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
+
+import { AppText } from '../Text/Text';
 
 export interface AvatarProps {
   uri?: string;
@@ -10,39 +12,59 @@ export interface AvatarProps {
   onPress?: () => void;
 }
 
-const sizeMap: Record<NonNullable<AvatarProps['size']>, number> = {
-  xs: 24,
-  sm: 32,
-  md: 40,
-  lg: 56,
-  xl: 72,
+const sizeClasses: Record<NonNullable<AvatarProps['size']>, string> = {
+  xs: 'w-6 h-6',
+  sm: 'w-8 h-8',
+  md: 'w-10 h-10',
+  lg: 'w-14 h-14',
+  xl: 'w-18 h-18',
 };
 
-const fontSizeMap: Record<NonNullable<AvatarProps['size']>, number> = {
-  xs: 10,
-  sm: 13,
-  md: 16,
-  lg: 22,
-  xl: 28,
+const fontSizeClasses: Record<NonNullable<AvatarProps['size']>, string> = {
+  xs: 'text-[10px]',
+  sm: 'text-xs',
+  md: 'text-base',
+  lg: 'text-xl',
+  xl: 'text-3xl',
 };
 
-const AVATAR_COLORS = [
-  '#3b82f6',
-  '#8b5cf6',
-  '#ec4899',
-  '#ef4444',
-  '#f59e0b',
-  '#10b981',
-  '#06b6d4',
-  '#6366f1',
+const shapeClasses = (
+  shape: NonNullable<AvatarProps['shape']>,
+  size: NonNullable<AvatarProps['size']>,
+): string => {
+  if (shape === 'circle') return 'rounded-full';
+
+  switch (size) {
+    case 'xs':
+      return 'rounded-sm';
+    case 'sm':
+      return 'rounded';
+    case 'md':
+      return 'rounded-md';
+    case 'lg':
+      return 'rounded-lg';
+    case 'xl':
+      return 'rounded-xl';
+  }
+};
+
+const AVATAR_BG_CLASSES = [
+  'bg-blue-500',
+  'bg-violet-500',
+  'bg-pink-500',
+  'bg-red-500',
+  'bg-amber-500',
+  'bg-emerald-500',
+  'bg-cyan-500',
+  'bg-indigo-500',
 ];
 
 function hashInitials(initials: string): string {
   let hash = 0;
   for (let i = 0; i < initials.length; i++) {
-    hash = (hash * 31 + initials.charCodeAt(i)) % AVATAR_COLORS.length;
+    hash = (hash * 31 + initials.charCodeAt(i)) % AVATAR_BG_CLASSES.length;
   }
-  return AVATAR_COLORS[hash] ?? AVATAR_COLORS[0];
+  return AVATAR_BG_CLASSES[hash] ?? AVATAR_BG_CLASSES[0];
 }
 
 export const Avatar = ({
@@ -52,43 +74,31 @@ export const Avatar = ({
   shape = 'circle',
   onPress,
 }: AvatarProps): React.JSX.Element => {
-  const dimension = sizeMap[size];
-  const borderRadius = shape === 'circle' ? dimension / 2 : dimension * 0.2;
-  const backgroundColor = initials != null ? hashInitials(initials) : '#94a3b8';
+  const sizeClass = sizeClasses[size];
+  const roundedClass = shapeClasses(shape, size);
+  const bgClass = initials != null ? hashInitials(initials) : 'bg-slate-400';
 
-  const containerStyle: {
-    width: number;
-    height: number;
-    borderRadius: number;
-    backgroundColor: string;
-    overflow: 'hidden';
-  } = {
-    width: dimension,
-    height: dimension,
-    borderRadius,
-    backgroundColor,
-    overflow: 'hidden',
-  };
+  const containerClass = `items-center justify-center overflow-hidden ${sizeClass} ${roundedClass} ${bgClass}`;
 
   const inner =
     uri != null ? (
       <Image
         source={{ uri }}
-        style={StyleSheet.absoluteFill}
+        className='absolute inset-0'
         accessibilityRole='image'
         accessibilityLabel={initials ?? 'Avatar'}
       />
     ) : (
-      <Text style={[styles.initialsText, { fontSize: fontSizeMap[size] }]} accessibilityRole='text'>
+      <AppText weight='semibold' className={`text-white ${fontSizeClasses[size]}`}>
         {initials?.slice(0, 2).toUpperCase() ?? '?'}
-      </Text>
+      </AppText>
     );
 
   if (onPress != null) {
     return (
       <Pressable
         onPress={onPress}
-        style={[styles.center, containerStyle]}
+        className={containerClass}
         accessibilityRole='button'
         accessibilityLabel={initials ?? 'Avatar'}
       >
@@ -98,21 +108,10 @@ export const Avatar = ({
   }
 
   return (
-    <View style={[styles.center, containerStyle]} accessibilityRole='image'>
+    <View className={containerClass} accessibilityRole='image'>
       {inner}
     </View>
   );
 };
 
 Avatar.displayName = 'Avatar';
-
-const styles = StyleSheet.create({
-  center: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  initialsText: {
-    color: '#ffffff',
-    fontWeight: '600',
-  },
-});

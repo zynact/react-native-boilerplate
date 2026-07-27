@@ -1,7 +1,5 @@
 import React, { type ReactNode } from 'react';
 
-import { StyleSheet } from 'react-native';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -30,7 +28,7 @@ interface RootProviderProps {
 export function RootProvider({ children }: RootProviderProps): React.JSX.Element {
   return (
     <StoreProvider>
-      <GestureHandlerRootView style={styles.root}>
+      <GestureHandlerRootView className='flex-1'>
         <SafeAreaProvider>
           <NavigationContainer linking={linking}>
             <BottomSheetProvider>
@@ -44,9 +42,3 @@ export function RootProvider({ children }: RootProviderProps): React.JSX.Element
     </StoreProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-});

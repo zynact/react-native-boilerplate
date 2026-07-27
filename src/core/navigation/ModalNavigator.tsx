@@ -1,8 +1,10 @@
 import React from 'react';
 
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { AppText } from '@shared/components';
 
 import type { ModalStackParamList } from './navigation.types';
 
@@ -38,12 +40,8 @@ export function ModalNavigator(): React.JSX.Element {
 
 function PlaceholderModal(): React.JSX.Element {
   return (
-    <View style={styles.container}>
-      <Text>Modal placeholder</Text>
+    <View className='flex-1 items-center justify-center'>
+      <AppText>Modal placeholder</AppText>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});

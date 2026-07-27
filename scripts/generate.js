@@ -71,7 +71,7 @@ export function ${pascal}Navigator(): React.JSX.Element {
       const pascal = toPascalCase(name);
       return `import React from 'react';
 
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppText, Button } from '@shared/components';
 
@@ -81,7 +81,7 @@ type Props = ${pascal}ScreenProps<'${pascal}Home'>;
 
 export function ${pascal}HomeScreen({ navigation }: Props): React.JSX.Element {
   return (
-    <View style={styles.container}>
+    <View className='flex-1 items-center justify-center p-4'>
       <AppText variant='h3' weight='semibold' className='mb-4'>
         ${pascal} Home Screen
       </AppText>
@@ -89,15 +89,6 @@ export function ${pascal}HomeScreen({ navigation }: Props): React.JSX.Element {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-});
 `;
     },
     types: (name) => {
@@ -148,7 +139,7 @@ export const { useGet${pascal}DataQuery } = ${camel}Api;
     const pascalFeature = toPascalCase(featureName);
     return `import React from 'react';
 
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppText } from '@shared/components';
 
@@ -158,22 +149,13 @@ type Props = ${pascalFeature}ScreenProps<'${pascalScreen}'>;
 
 export function ${pascalScreen}Screen(_props: Props): React.JSX.Element {
   return (
-    <View style={styles.container}>
+    <View className='flex-1 items-center justify-center p-4'>
       <AppText variant='h3' weight='semibold'>
         ${pascalScreen} Screen
       </AppText>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-});
 `;
   },
 
@@ -181,7 +163,7 @@ const styles = StyleSheet.create({
     const pascal = toPascalCase(componentName);
     return `import React from 'react';
 
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppText } from '@shared/components';
 
@@ -191,17 +173,11 @@ interface ${pascal}Props {
 
 export function ${pascal}({ title }: ${pascal}Props): React.JSX.Element {
   return (
-    <View style={styles.container}>
+    <View className='p-2'>
       <AppText>{title || '${pascal} Component'}</AppText>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 8,
-  },
-});
 `;
   },
 
@@ -279,7 +255,7 @@ export default ${camel}Slice.reducer;
     const pascal = toPascalCase(formName);
     return `import React, { useState } from 'react';
 
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppText, Button, Input } from '@shared/components';
 
@@ -301,7 +277,7 @@ export function ${pascal}Form(): React.JSX.Element {
   };
 
   return (
-    <View style={styles.container}>
+    <View className='p-4'>
       <Input
         label='Name'
         placeholder='Enter name'
@@ -309,19 +285,10 @@ export function ${pascal}Form(): React.JSX.Element {
         onChangeText={(text) => setValues({ name: text })}
         error={error ?? undefined}
       />
-      <Button label='Submit' onPress={handleSubmit} style={styles.button} />
+      <Button label='Submit' onPress={handleSubmit} className='mt-4' />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  button: {
-    marginTop: 16,
-  },
-});
 `;
   },
 };
