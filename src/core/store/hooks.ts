@@ -1,6 +1,6 @@
 import { useDispatch, useSelector, useStore } from 'react-redux';
 
-import type { AppDispatch, RootState } from './store';
+import type { AppDispatch, RootState, AppStore } from './store';
 
 /**
  * Typed dispatch hook – use instead of plain useDispatch()
@@ -20,4 +20,4 @@ export const useAppSelector = useSelector.withTypes<RootState>();
  *
  * @example const store = useAppStore(); store.getState().auth.isAuthenticated;
  */
-export const useAppStore = useStore.withTypes<RootState>();
+export const useAppStore = useStore.withTypes<AppStore>();
