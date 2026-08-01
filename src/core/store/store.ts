@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 
 import { baseApi } from '@core/api';
 import { authSlice } from '@core/auth';
@@ -25,6 +26,11 @@ export const store = configureStore({
 
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
 });
+
+// Enables RTK Query automatic re-fetch on:
+//   - app comes back to the foreground (AppState 'active')
+//   - network connectivity is restored
+setupListeners(store.dispatch);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Inferred types – use these everywhere, never import the store directly
