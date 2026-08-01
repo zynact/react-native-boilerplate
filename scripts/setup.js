@@ -69,15 +69,15 @@ function updatePackageJson(displayName) {
   console.log('  ✔ package.json updated');
 }
 
-function updateAppJson(appName, displayName) {
-  const filePath = 'app.json';
-  if (!fileExists(filePath)) return;
-  const content = JSON.parse(readFile(filePath));
-  content.name = appName;
-  content.displayName = displayName;
-  writeFile(filePath, JSON.stringify(content, null, 2) + '\n');
-  console.log('  ✔ app.json updated');
-}
+// function updateAppJson(appName, displayName) {
+//   const filePath = 'app.json';
+//   if (!fileExists(filePath)) return;
+//   const content = JSON.parse(readFile(filePath));
+//   content.name = appName;
+//   content.displayName = displayName;
+//   writeFile(filePath, JSON.stringify(content, null, 2) + '\n');
+//   console.log('  ✔ app.json updated');
+// }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main
@@ -135,7 +135,7 @@ async function main() {
 
   try {
     updatePackageJson(displayName);
-    updateAppJson(appName, displayName);
+    // updateAppJson(appName, displayName);
   } catch (err) {
     console.error('\n✖ Error during metadata updates:', err.message);
     process.exit(1);
