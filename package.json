@@ -35,6 +35,7 @@
     "@reduxjs/toolkit": "2.12.0",
     "iconsax-react-nativejs": "^0.0.8",
     "nativewind": "4.2.6",
+    "react": "19.2.8",
     "react-hook-form": "^7.83.0",
     "react-native": "0.86.0",
     "react-native-config": "1.6.1",
