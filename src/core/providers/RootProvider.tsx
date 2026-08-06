@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { BottomSheetProvider, DialogProvider, linking } from '@core/navigation';
 import { ToastProvider } from '@core/services';
+import { NetworkBanner } from '@shared/components';
 
 import { StoreProvider } from './StoreProvider';
 
@@ -30,6 +31,7 @@ export function RootProvider({ children }: RootProviderProps): React.JSX.Element
     <StoreProvider>
       <GestureHandlerRootView className='flex-1'>
         <SafeAreaProvider>
+          <NetworkBanner />
           <NavigationContainer linking={linking}>
             <BottomSheetProvider>
               <DialogProvider>

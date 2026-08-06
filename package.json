@@ -22,7 +22,10 @@
     "add:stripe": "node scripts/add-module.js stripe",
     "add:sentry": "node scripts/add-module.js sentry",
     "add:maps": "node scripts/add-module.js maps",
-    "add:camera": "node scripts/add-module.js camera"
+    "add:camera": "node scripts/add-module.js camera",
+    "add:i18n": "node scripts/add-module.js i18n",
+    "add:push-notifications": "node scripts/add-module.js push-notifications",
+    "generate:assets": "node scripts/generate-assets.js"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "5.2.14",

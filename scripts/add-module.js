@@ -293,6 +293,99 @@ export const CameraPermissionsService = {
   },
 };
 `,
+
+  i18n: `import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import 'intl-pluralrules';
+
+import en from '../../../assets/locales/en.json';
+import es from '../../../assets/locales/es.json';
+
+const resources = {
+  en: { translation: en },
+  es: { translation: es },
+};
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: 'en',
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+
+export const i18nService = {
+  changeLanguage: (lng: string) => i18n.changeLanguage(lng),
+  getCurrentLanguage: () => i18n.language,
+  t: (key: string, options?: object) => i18n.t(key, options),
+};
+
+export default i18n;
+`,
+
+  notifications: `import notifee, { AndroidImportance, EventType, Notification } from '@notifee/react-native';
+import { logger } from '../logger/logger.service';
+
+export interface DisplayNotificationOptions {
+  title: string;
+  body: string;
+  data?: Record<string, string>;
+}
+
+class PushNotificationServiceClass {
+  async requestPermission(): Promise<boolean> {
+    try {
+      const settings = await notifee.requestPermission();
+      const granted = settings.authorizationStatus >= 1;
+      logger.info(\`[PushNotifications] Permission status: \${settings.authorizationStatus}\`);
+      return granted;
+    } catch (error) {
+      logger.error('[PushNotifications] Request permission failed', error);
+      return false;
+    }
+  }
+
+  async displayNotification({ title, body, data }: DisplayNotificationOptions): Promise<string> {
+    try {
+      const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+        importance: AndroidImportance.HIGH,
+      });
+
+      return await notifee.displayNotification({
+        title,
+        body,
+        data,
+        android: {
+          channelId,
+          pressAction: { id: 'default' },
+        },
+      });
+    } catch (error) {
+      logger.error('[PushNotifications] Display notification failed', error);
+      throw error;
+    }
+  }
+
+  onNotificationOpened(callback: (notification: Notification) => void): () => void {
+    return notifee.onForegroundEvent(({ type, detail }) => {
+      if (type === EventType.PRESS && detail.notification) {
+        callback(detail.notification);
+      }
+    });
+  }
+
+  async cancelAllNotifications(): Promise<void> {
+    await notifee.cancelAllNotifications();
+  }
+}
+
+export const PushNotificationService = new PushNotificationServiceClass();
+`,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -441,6 +534,80 @@ function installCamera() {
   console.log('✅ Camera module installed successfully!');
 }
 
+function installI18n() {
+  console.log(
+    '📦 Installing i18next, react-i18next, and intl-pluralrules (explicit PNPM installation)...',
+  );
+  execSync('pnpm add i18next react-i18next intl-pluralrules', { stdio: 'inherit', cwd: ROOT });
+
+  const localesDir = path.join(ROOT, 'src', 'assets', 'locales');
+  ensureDir(localesDir);
+
+  const enJson = {
+    common: {
+      welcome: 'Welcome',
+      save: 'Save',
+      cancel: 'Cancel',
+      loading: 'Loading...',
+    },
+    network: {
+      offline: 'No Internet Connection — Offline Mode',
+      backOnline: 'Back Online',
+    },
+  };
+
+  const esJson = {
+    common: {
+      welcome: 'Bienvenido',
+      save: 'Guardar',
+      cancel: 'Cancelar',
+      loading: 'Cargando...',
+    },
+    network: {
+      offline: 'Sin conexión a internet — Modo sin conexión',
+      backOnline: 'De nuevo en línea',
+    },
+  };
+
+  fs.writeFileSync(path.join(localesDir, 'en.json'), JSON.stringify(enJson, null, 2), 'utf8');
+  fs.writeFileSync(path.join(localesDir, 'es.json'), JSON.stringify(esJson, null, 2), 'utf8');
+
+  const serviceDir = path.join(ROOT, 'src', 'core', 'services', 'i18n');
+  ensureDir(serviceDir);
+  fs.writeFileSync(path.join(serviceDir, 'i18n.service.ts'), TEMPLATES.i18n, 'utf8');
+
+  const indexFile = path.join(ROOT, 'src', 'core', 'services', 'index.ts');
+  let content = fs.readFileSync(indexFile, 'utf8');
+  if (!content.includes('i18nService')) {
+    content += `\nexport { i18nService } from './i18n/i18n.service';\n`;
+    fs.writeFileSync(indexFile, content, 'utf8');
+  }
+
+  console.log('✅ i18n localization module installed successfully!');
+}
+
+function installPushNotifications() {
+  console.log('📦 Installing @notifee/react-native...');
+  execSync('pnpm add @notifee/react-native', { stdio: 'inherit', cwd: ROOT });
+
+  const serviceDir = path.join(ROOT, 'src', 'core', 'services', 'notifications');
+  ensureDir(serviceDir);
+  fs.writeFileSync(
+    path.join(serviceDir, 'notifications.service.ts'),
+    TEMPLATES.notifications,
+    'utf8',
+  );
+
+  const indexFile = path.join(ROOT, 'src', 'core', 'services', 'index.ts');
+  let content = fs.readFileSync(indexFile, 'utf8');
+  if (!content.includes('PushNotificationService')) {
+    content += `\nexport { PushNotificationService } from './notifications/notifications.service';\n`;
+    fs.writeFileSync(indexFile, content, 'utf8');
+  }
+
+  console.log('✅ Push notifications module installed successfully!');
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Main
 // ─────────────────────────────────────────────────────────────────────────────
@@ -449,18 +616,32 @@ function main() {
   const args = process.argv.slice(2);
   const moduleName = args[0];
 
-  const allowedModules = ['socketio', 'websocket', 'sse', 'stripe', 'sentry', 'maps', 'camera'];
+  const allowedModules = [
+    'socketio',
+    'websocket',
+    'sse',
+    'stripe',
+    'sentry',
+    'maps',
+    'camera',
+    'i18n',
+    'push-notifications',
+  ];
 
   if (!moduleName || !allowedModules.includes(moduleName)) {
     console.log('\nUsage: pnpm add:<module>\n');
     console.log('Supported Modules:');
-    console.log('  socketio    - Install Socket.IO client interface');
-    console.log('  websocket   - Scaffold Custom Robust WebSocket wrapper');
-    console.log('  sse         - Install Server-Sent Events client');
-    console.log('  stripe      - Install Stripe payment provider');
-    console.log('  sentry      - Install Sentry bug reporting tool');
-    console.log('  maps        - Install Google/Apple Map View');
-    console.log('  camera      - Install native Camera permissions & handler');
+    console.log('  socketio            - Install Socket.IO client interface');
+    console.log('  websocket           - Scaffold Custom Robust WebSocket wrapper');
+    console.log('  sse                 - Install Server-Sent Events client');
+    console.log('  stripe              - Install Stripe payment provider');
+    console.log('  sentry              - Install Sentry bug reporting tool');
+    console.log('  maps                - Install Google/Apple Map View');
+    console.log('  camera              - Install native Camera permissions & handler');
+    console.log(
+      '  i18n                - Install i18next internationalization & locale dictionaries',
+    );
+    console.log('  push-notifications  - Install Notifee push notifications & permission service');
     console.log('');
     process.exit(1);
   }
@@ -486,6 +667,12 @@ function main() {
       break;
     case 'camera':
       installCamera();
+      break;
+    case 'i18n':
+      installI18n();
+      break;
+    case 'push-notifications':
+      installPushNotifications();
       break;
   }
 }

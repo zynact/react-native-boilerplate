@@ -203,9 +203,7 @@ import type { AuthScreenProps } from '@core/navigation';
 interface LoginScreenProps extends AuthScreenProps<'Login'> {}
 
 export function LoginScreen({ navigation }: LoginScreenProps): React.JSX.Element {
-  return (
-    <View className='flex-1 bg-white dark:bg-slate-900' />
-  );
+  return <View className='flex-1 bg-white dark:bg-slate-900' />;
 }
 ```
 

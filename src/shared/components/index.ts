@@ -32,3 +32,6 @@ export type { SkeletonProps } from './Skeleton/Skeleton';
 
 export { AppText } from './Text/Text';
 export type { TextProps } from './Text/Text';
+
+export { NetworkBanner } from './NetworkBanner/NetworkBanner';
+export type { NetworkBannerProps } from './NetworkBanner/NetworkBanner';
