@@ -364,7 +364,9 @@ function generateScreen(targetArg) {
 
   console.log(`✅ Screen "${pascalScreen}Screen" generated at src/features/${feature}/screens/`);
   console.log(
-    `⚠ Make sure to add "${pascalScreen}" to the ${toPascalCase(feature)}StackParamList and the Navigator.`,
+    `⚠ Make sure to add "${pascalScreen}" to the ${toPascalCase(
+      feature,
+    )}StackParamList and the Navigator.`,
   );
 }
 

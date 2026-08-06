@@ -27,7 +27,8 @@ function requireString(key: string, fallback?: string): string {
 
 function requireEnum<T extends string>(key: string, allowed: readonly T[], fallback?: T): T {
   const raw = ((RNConfig as Record<string, string | undefined>)[key] ?? fallback) as
-    string | undefined;
+    | string
+    | undefined;
   if (!raw || !allowed.includes(raw as T)) {
     throw new Error(
       `[Config] Invalid value for ${key}: "${raw ?? ''}". Must be one of: ${allowed.join(', ')}`,

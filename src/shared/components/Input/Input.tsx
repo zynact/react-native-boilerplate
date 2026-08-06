@@ -48,8 +48,8 @@ export const Input = ({
   const borderClass = hasError
     ? 'border-error'
     : focused
-      ? 'border-primary-500'
-      : 'border-secondary-300';
+    ? 'border-primary-500'
+    : 'border-secondary-300';
 
   const inputContainerClass = [
     'flex-row items-center rounded-lg border bg-white px-3',
