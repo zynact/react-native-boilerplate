@@ -52,10 +52,10 @@ export const Input = ({
     : 'border-secondary-300';
 
   const inputContainerClass = [
-    'flex-row items-center rounded-lg border bg-white px-3',
+    'flex-row items-center rounded-lg border bg-white px-4',
     borderClass,
     disabled ? 'bg-secondary-100 opacity-60' : '',
-    multiline ? 'min-h-[80px] items-start py-2' : 'h-12',
+    multiline ? 'min-h-[80px] items-start py-2' : 'h-14',
   ]
     .filter(Boolean)
     .join(' ');

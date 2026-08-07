@@ -1,14 +1,27 @@
-import React, { type ComponentProps } from 'react';
+import React from 'react';
 
-import { TextInput } from 'react-native';
+import { type TextInputProps } from 'react-native';
 
 import { Controller, useFormContext } from 'react-hook-form';
 
-interface FormTextFieldProps extends ComponentProps<typeof TextInput> {
+import { Input } from '../Input/Input';
+
+interface FormTextFieldProps extends TextInputProps {
   name: string;
+  label?: string;
+  error?: string;
+  hint?: string;
+  disabled?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
-export function FormTextField({ name, ...props }: FormTextFieldProps): React.JSX.Element {
+export function FormTextField({
+  name,
+  editable,
+  disabled,
+  ...props
+}: FormTextFieldProps): React.JSX.Element {
   const { control } = useFormContext();
 
   return (
@@ -16,11 +29,11 @@ export function FormTextField({ name, ...props }: FormTextFieldProps): React.JSX
       control={control}
       name={name}
       render={({ field: { onChange, onBlur, value } }) => (
-        <TextInput
+        <Input
           onBlur={onBlur}
           onChangeText={onChange}
-          value={value}
-          className='border border-gray-300 rounded-md p-2'
+          value={String(value ?? '')}
+          disabled={disabled ?? editable === false}
           {...props}
         />
       )}

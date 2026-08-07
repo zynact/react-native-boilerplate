@@ -6,6 +6,7 @@ module.exports = {
     'nativewind/babel',
   ],
   plugins: [
+    '@babel/plugin-transform-export-namespace-from',
     [
       'module-resolver',
       {
